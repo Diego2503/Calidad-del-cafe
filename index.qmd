@@ -1,0 +1,94 @@
+---
+title: "index"
+format: html
+---
+# Diego Camacho Palacios
+
+## Graficación sobre la calidad del café según el Instituto de calidad del café (CQI)
+
+### Grupo 2
+
+#### Introducción
+
+En este trabajo se presenta ciertos gráficos relacionados con la
+calidad del café donde se utilizan diferentes formas de lenguaje en programación en R, el objetivo de estas gráficas es saber cúal es la calidad que tiene el café en distintas partes
+
+Para este estudio se van a utilizar datos extraidos de la Coffee Quality Institute (CQI)que tiene muchas muestras de café alrededor del mundo.
+
+## Carga de paquetes de R
+```{r}
+#| label: Carga-datos
+#| warning: false
+library(DT)
+library(ggplot2)
+library(plotly)
+library(dplyr)
+library(tidyverse)
+library(ggthemes)
+library(readr)
+
+```
+## Carga de datos
+```{r}
+read_csv("C:/Users/C21572/index/index/coffee-quality.csv")
+
+```
+## Desarrollo, Tabla DT
+```{r}
+# Tabla de datos
+# Leer el archivo coffee-quality.csv 
+coffee_data <- read.csv("C:/Users/C21572/index/index/coffee-quality.csv"
+)
+
+# Crear la tabla interactiva con el paquete DT
+datatable(coffee_data[, c("Country_of_Origin", "Variety", "Color", "Altitude", "Total_Cup_Points")],
+          options = list(pageLength = 10, lengthMenu = c(10, 20, 50)),
+      filter="top")
+
+```
+
+# Histograma
+```{r}
+# Histograma que muestre la distribución de la variable Total_Cup_Points
+p <- ggplot(coffee_data, aes(x = Total_Cup_Points)) +
+  geom_histogram(binwidth = 1, color = "black", fill = "grey") +
+  geom_density(alpha = 0.2, fill = "red") +
+  labs(title = "Distribución de Total Cup Points",
+       x = "Total Cup Points",
+       y = "Frecuencia") +
+  theme_clean()
+
+# Convertir el gráfico a plotly para hacerlo interactivo
+ggplotly(p)
+```
+# Gráfico de dispersión
+```{r}
+# Gráfico de dispersión de Altitude (altitud, en el eje x) vs Total_Cup_Points (puntaje total, en el eje y)
+p <- ggplot(coffee_data, aes(x = Altitude, y = Total_Cup_Points)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Relación entre Altitude y Total Cup Points",
+       x = "Altitude",
+       y = "Total Cup Points") +
+  theme_clean()
+
+# Convertir el gráfico a plotly para hacerlo interactivo
+ggplotly(p, tooltip = c("Altitude", "Total_Cup_Points"))
+
+```
+# Gráfico de caja
+```{r}
+# Gráfico de caja que muestre las estadísticas (cuartiles, mínimos, máximos y valores atípicos) de la variable Total_Cup_Points (puntaje total) para cada valor de la variable Color (color)
+
+p <- ggplot(coffee_data, aes(x = Color, y = Total_Cup_Points)) +
+  geom_boxplot() +
+  labs(title = "Distribución de Total Cup Points por Color",
+       x = "Color",
+       y = "Total Cup Points") +
+  theme_clean() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Convertir el gráfico a plotly para hacerlo interactivo
+ggplotly(p)
+```
+
